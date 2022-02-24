@@ -43,22 +43,29 @@ def main():
         m = len(y)
         t_length = len(Theta)
         pred = np.matmul(X, np.transpose([Theta]))
+        error = pred - y
         #cost function
-        J = np.sum(np.power((pred - y), 2)) * 1/m
+        J = np.sum(np.power(error, 2)) * 1/m
 
-        #implement gradient fn later
+        
         theta_grad = np.zeros(t_length)
-        for i in range(0, m):
-            theta_grad += (pred[i] - y[i]) * X[i, :]
+        #iterative approach
+        # for i in range(0, m):
+        #     theta_grad += error[i] * X[i, :]
+
+        #vectorized approach
+        theta_grad = np.sum((error * X), axis=0)
 
         theta_grad /= m
         return J, theta_grad
 
     init_theta = np.array([0,  0])
-    theta, cost_per_iter = batch_gradient_descent(costCalculator, 0.07, X, y, init_theta)
+    alpha = 0.07
+    theta, cost_per_iter = batch_gradient_descent(costCalculator, alpha, X, y, init_theta)
     prediction = np.matmul(X, theta)
-    y_pred = np.array(prediction)
-    y_pred = y_pred.reshape((len(y), 1))
+
+    # np.array(prediction).reshape(y.shape)
+    # y_pred = y_pred.reshape((len(y), 1))
     
     plt.title("Salary / Experience")
     plt.scatter(X[:, 1], y, s=10)
