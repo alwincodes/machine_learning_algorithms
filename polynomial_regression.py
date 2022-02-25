@@ -1,4 +1,4 @@
-from tools.preprocessing.normalize import normalize
+from tools.preprocessing.normalize import multi_col_normalize, normalize
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -46,7 +46,7 @@ def main():
     #cost calculated for the value of theta is
     print(f"The cost calculated for value of Theta after {iteration_count} iteration is {cost_per_iter[iteration_count-1]}")
     #visualize our learning model
-    plot_graphs(X[:, 1], y, predictions, cost_per_iter, xlabel="Level", ylabel="salary")
+    plot_graphs(X[:, 1], y, predictions, cost_per_iter, xlabel="Level", ylabel="Salary")
 
     """
     As we can see in the graph our model tried its best to fit a straigt line through the data but it was not enough so lets try adding
@@ -56,10 +56,11 @@ def main():
     X = generate_features(X, 4) #generates polynomial features of 4 rows
     #since the generated polynomial features are very large we need to apply normalization
     y = normalize(y)
-    X[:, 1] = normalize(X[:, 1])
-    X[:, 2] = normalize(X[:, 2])
-    X[:, 3] = normalize(X[:, 3])
-    X[:, 4] = normalize(X[:, 4])
+    # X[:, 1] = normalize(X[:, 1])
+    # X[:, 2] = normalize(X[:, 2])
+    # X[:, 3] = normalize(X[:, 3])
+    # X[:, 4] = normalize(X[:, 4])
+    X[:, 1:] = multi_col_normalize(X[:, 1:])
     init_theta = np.zeros(X.shape[1])
     theta, cost_per_iter = batch_gradient_descent(linear_regression_cost, alpha, X, y, init_theta, itcount=iteration_count)
     predictions = np.matmul(X, theta)
