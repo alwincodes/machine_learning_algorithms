@@ -19,10 +19,15 @@ def multi_col_normalize(arr):
         #get the length of the row
         row_len = len(arr[:, col])
         total_sum = 0
-        for row in range(0, row_len):
-            total_sum = total_sum + arr[row, col]
+        # for row in range(0, row_len):
+        #     total_sum = total_sum + arr[row, col]
+        total_sum = arr[:, col].sum(axis=0)
 
         mean = total_sum/row_len
-        res[:, col] = (arr[:, col] - mean)/(np.max(arr[:, col]) - np.min(arr[:, col]))
+        max_min = (np.max(arr[:, col]) - np.min(arr[:, col]))
+        if max_min == 0:
+            res[:, col] = 0
+        else:
+            res[:, col] = np.divide((arr[:, col] - mean), max_min)
 
     return res

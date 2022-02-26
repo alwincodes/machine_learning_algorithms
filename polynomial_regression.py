@@ -53,7 +53,7 @@ def main():
     polynomial features
     """
 
-    polynomial_degree = 6
+    polynomial_degree = 4
 
     for i in range(2, polynomial_degree+1):
         X = generate_features(X, i) #generates polynomial features of n rows
