@@ -6,7 +6,7 @@ Goal of this project is to create a one vs all logistic regression for classifyi
 import idx2numpy
 import numpy as np
 import matplotlib.pyplot as plt
-from tools.algorithms.cost_function import linear_regression_cost, logistic_regression_cost
+from tools.algorithms.cost_function import linear_regression_cost, logistic_regression_cost, sigmoid_fn
 from tools.preprocessing.normalize import multi_col_normalize
 from tools.gradient_descent.batch_gd import batch_gradient_descent
 
@@ -22,10 +22,10 @@ train_labels = idx2numpy.convert_from_file(file_train_label)
 test_images = idx2numpy.convert_from_file(file_test_images)
 test_labels = idx2numpy.convert_from_file(file_test_label)
 
-print(train_images.shape)
-print(train_labels.shape)
-print(test_images.shape)
-print(test_labels.shape)
+# print(train_images.shape)
+# print(train_labels.shape)
+# print(test_images.shape)
+# print(test_labels.shape)
 
 # for i in range(0, 20):
 #     print(train_labels[i])
@@ -33,7 +33,7 @@ print(test_labels.shape)
 #     plt.show()
 
 #training set
-X = train_images
+X = train_images.astype(np.float64)
 y = train_labels
 
 #flatten the 60000 x 28 x 28 matrix into a 6000 x 784 matrix
@@ -48,23 +48,26 @@ X = np.insert(X, 0, ones, axis=1)
 
 
 model = np.zeros((10, X.shape[1]))
-X[:, 1:] = multi_col_normalize(X[:, 1:])
+# X[:, 1:] = multi_col_normalize(X[:, 1:])
 #we store our models here
 
-for i in range(0, 10):
+for i in range(0, 1):
     y_train  = (y == i).astype("int")
 
     #creating initial theta values for the coloumns
-    init_theta = np.zeros(X.shape[1])
+    init_theta = np.zeros(X.shape[1], dtype=np.float64)
     
-    alpha = 0.8
-    iteration_count = 60
+    alpha = 0.01
+    iteration_count = 10
     theta, cost_per_iter = batch_gradient_descent(logistic_regression_cost, alpha, X, y_train, init_theta, itcount=iteration_count)
     model[i, :] = theta
-    # predictions = np.matmul(X, theta)
+    predictions = sigmoid_fn(np.matmul(X, theta))
     print(f"The cost calculated for value of Theta after {iteration_count} iteration is {cost_per_iter[iteration_count-1]}")
     plt.plot(cost_per_iter)
-    plt.show()
+    plt.show(block=False)
+    plt.pause(3)
+    plt.close()
+ 
 
 #save the theta array for further use
-np.save("ml_model", model)
+np.save("logistic_number_model", model)
